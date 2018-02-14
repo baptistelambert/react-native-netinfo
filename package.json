@@ -1,0 +1,13 @@
+{
+  "name": "react-native-netinfo",
+  "version": "1.0.0",
+  "description":
+    "Notifies your app when the network goes offline and back online.",
+  "main": "src/index.js",
+  "author": "Baptiste Lambert",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">= 16.2.0",
+    "react-native": ">= 0.53.0"
+  }
+}
