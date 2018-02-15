@@ -1,9 +1,10 @@
-import { createElement, Component } from 'react';
+import React, { createElement, Component } from 'react';
 import { NetInfo } from 'react-native';
+
+const isEmptyChildren = children => React.Children.count(children) === 0;
 
 class NetInfoProvider extends Component {
   static defaultProps = {
-    render: () => null,
     onChange: () => {}
   };
 
@@ -37,11 +38,18 @@ class NetInfoProvider extends Component {
   };
 
   render() {
-    const { component, render } = this.props;
+    const { children, component, render } = this.props;
 
     if (component) return createElement(component, this.state);
 
-    return render(this.state);
+    if (render) return render(this.state);
+
+    if (typeof children === 'function') return children(this.state);
+
+    if (children && !isEmptyChildren(children))
+      return React.Children.only(children);
+
+    return null;
   }
 }
 
