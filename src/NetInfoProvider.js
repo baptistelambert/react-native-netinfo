@@ -8,27 +8,31 @@ class NetInfoProvider extends Component {
   };
 
   state = {
-    isConnected: true
+    isConnected: true,
+    connectionInfo: {
+      type: null,
+      effectiveType: null
+    }
   };
 
   componentDidMount() {
-    NetInfo.isConnected.addEventListener(
-      'connectionChange',
-      this.handleConnectionChange
-    );
+    NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
   }
 
   componentWillUnmount() {
-    NetInfo.isConnected.removeEventListener(
+    NetInfo.removeEventListener(
       'connectionChange',
       this.handleConnectionChange
     );
   }
 
   handleConnectionChange = () => {
-    NetInfo.isConnected.fetch().then(isConnected => {
-      this.props.onChange({ isConnected });
-      this.setState({ isConnected });
+    Promise.all([
+      NetInfo.isConnected.fetch(),
+      NetInfo.getConnectionInfo()
+    ]).then(([isConnected, connectionInfo]) => {
+      this.props.onChange({ isConnected, connectionInfo });
+      this.setState({ isConnected, connectionInfo });
     });
   };
 
