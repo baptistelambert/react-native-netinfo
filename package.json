@@ -1,6 +1,6 @@
 {
   "name": "react-native-netinfo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description":
     "Notifies your app when the network goes offline and back online.",
   "main": "src/index.js",
