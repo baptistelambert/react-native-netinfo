@@ -22,12 +22,19 @@ import { NetInfoProvider } from 'react-native-netinfo';
 const App = () => (
   <View>
     <NetInfoProvider
-      onChange={({ isConnected }) => {
+      onChange={({ isConnected, connectionInfo }) => {
         console.log(isConnected);
+        console.log(connectionInfo);
       }}
-      render={({ isConnected }) =>
+      render={({ isConnected, connectionInfo }) =>
         isConnected ? (
-          <Text>Wonderful, you are connected!</Text>
+          <React.Fragment>
+            <Text>Wonderful, you are connected!</Text>
+            <Text>Connection type: {connectionInfo.type}</Text>
+            <Text>
+              Effective connection type:{connectionInfo.effectiveType}
+            </Text>
+          </React.Fragment>
         ) : (
           <Text>It looks like you encounter connectivity problems.</Text>
         )
@@ -37,14 +44,49 @@ const App = () => (
 );
 ```
 
+### With children as a function
+
+```js
+import { NetInfoProvider } from 'react-native-netinfo';
+
+const App = () => (
+  <View>
+    <NetInfoProvider
+      onChange={({ isConnected, connectionInfo }) => {
+        console.log(isConnected);
+        console.log(connectionInfo);
+      }}
+    >
+      {({ isConnected, connectionInfo }) =>
+        isConnected ? (
+          <React.Fragment>
+            <Text>Wonderful, you are connected!</Text>
+            <Text>Connection type: {connectionInfo.type}</Text>
+            <Text>
+              Effective connection type:{connectionInfo.effectiveType}
+            </Text>
+          </React.Fragment>
+        ) : (
+          <Text>It looks like you encounter connectivity problems.</Text>
+        )
+      }
+    </NetInfoProvider>
+  </View>
+);
+```
+
 ### With component injection
 
 ```js
 import { NetInfoProvider } from 'react-native-netinfo';
 
-const ConnectedComponent = ({ isConnected }) =>
+const ConnectedComponent = ({ isConnected, connectionInfo }) =>
   isConnected ? (
-    <Text>Wonderful, you are connected!</Text>
+    <React.Fragment>
+      <Text>Wonderful, you are connected!</Text>
+      <Text>Connection type: {connectionInfo.type}</Text>
+      <Text>Effective connection type:{connectionInfo.effectiveType}</Text>
+    </React.Fragment>
   ) : (
     <Text>It looks like you encounter connectivity problems.</Text>
   );
@@ -52,8 +94,9 @@ const ConnectedComponent = ({ isConnected }) =>
 const App = () => (
   <View>
     <NetInfoProvider
-      onChange={({ isConnected }) => {
+      onChange={({ isConnected, connectionInfo }) => {
         console.log(isConnected);
+        console.log(connectionInfo);
       }}
       component={ConnectedComponent}
     />
@@ -62,3 +105,22 @@ const App = () => (
 ```
 
 NB: you should not set both component and render props. If you were to do this, the render prop would be ignored.
+
+## Constants
+
+This package also exposes constants for connection info's types and effective types.
+
+You can use them like so:
+
+```js
+import { CONSTANTS } from 'react-native-netinfo';
+
+const App = () => (
+  <View>
+    <Text>{CONSTANTS.CONNECTION_INFO.TYPES.WIFI}</Text>
+    <Text>{CONSTANTS.CONNECTION_INFO.EFFECTIVE_TYPES['4G']}</Text>
+  </View>
+);
+```
+
+You can find the full list of types and effective types in the [official React Native documentation about NetInfo](https://facebook.github.io/react-native/docs/netinfo.html#connectiontype-enum).
